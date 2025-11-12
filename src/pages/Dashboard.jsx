@@ -213,4 +213,54 @@ function Dashboard() {
   );
 }
 
+{/* STEM Journey Tracker */}
+<div className="mt-8 card bg-white border border-gray-200 p-6">
+  <h2 className="text-2xl font-bold text-gray-900 mb-6">🌟 Your STEM Journey Tracker</h2>
+
+  {journey ? (
+    <div className="space-y-6">
+      {/* Skills Progress */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Skills Progress</h3>
+        {journey.skills?.map((skill) => (
+          <div key={skill.name} className="mb-3">
+            <p className="text-sm text-gray-600 mb-1">{skill.name}</p>
+            <div className="w-full bg-gray-200 rounded-full h-3">
+              <div
+                className="h-3 rounded-full bg-purple-600"
+                style={{ width: `${skill.progress}%` }}
+              ></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Goals */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Mentorship Goals</h3>
+        <ul className="list-disc list-inside text-gray-600 space-y-1">
+          {journey.goals?.map((goal, idx) => (
+            <li key={idx}>
+              {goal.completed ? '✅' : '🔲'} {goal.name}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Outcomes */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-800 mb-2">Outcomes</h3>
+        <ul className="list-decimal list-inside text-gray-600 space-y-1">
+          {journey.outcomes?.map((outcome, idx) => (
+            <li key={idx}>{outcome}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  ) : (
+    <p className="text-gray-500">Loading your STEM journey data...</p>
+  )}
+</div>
+
 export default Dashboard;
+
