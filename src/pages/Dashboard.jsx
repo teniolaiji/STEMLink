@@ -203,6 +203,47 @@ function Dashboard() {
             </div>
           )}
         </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8 card bg-gray-50">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {user?.role === 'STUDENT' ? (
+              <>
+                <button 
+                  onClick={() => navigate('/recommended-mentors')}
+                  className="btn-primary text-sm py-3"
+                >
+                  🔍 Recommended Mentors
+                </button>
+                <button 
+                  onClick={() => navigate('/mentors')}
+                  className="bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm"
+                >
+                  📚 Browse All Mentors
+                </button>
+              </>
+            ) : (
+              <>
+                <button 
+                  onClick={() => navigate('/mentor-profile')}
+                  className="btn-primary text-sm py-3"
+                >
+                  ✏️ Edit Profile
+                </button>
+                <button 
+                  onClick={() => navigate('/mentorship-requests')}
+                  className="bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm"
+                >
+                  📥 View Requests
+                </button>
+              </>
+            )}
+            <button className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm">
+              ⚙️ Settings
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -232,4 +232,82 @@ export const reviewAPI = {
   },
 };
 
+// Mentorship API calls
+export const mentorshipAPI = {
+  // Get pending mentorship requests (for mentors)
+  getPendingRequests: async () => {
+    const response = await apiClient.get('/mentorship/requests');
+    return response.data;
+  },
+
+  // Get current mentees (for mentors)
+  getCurrentMentees: async () => {
+    const response = await apiClient.get('/mentorship/mentees');
+    return response.data;
+  },
+
+  // Accept mentorship request
+  acceptRequest: async (requestId) => {
+    const response = await apiClient.post(`/mentorship/requests/${requestId}/accept`);
+    return response.data;
+  },
+
+  // Decline mentorship request
+  declineRequest: async (requestId) => {
+    const response = await apiClient.post(`/mentorship/requests/${requestId}/decline`);
+    return response.data;
+  },
+
+  // Get recommended mentors (for students)
+  getRecommendedMentors: async () => {
+    const response = await apiClient.get('/mentorship/mentors/recommended');
+    return response.data;
+  },
+
+  // Get all mentors with pagination and filters
+  getAllMentors: async (params = {}) => {
+    const response = await apiClient.get('/mentorship/mentors', { params });
+    return response.data;
+  },
+
+  // Get single mentor by ID
+  getMentorById: async (mentorId) => {
+    const response = await apiClient.get(`/mentorship/mentors/${mentorId}`);
+    return response.data;
+  },
+
+  // Send mentorship request
+  sendRequest: async (mentorId, message) => {
+    const response = await apiClient.post('/mentorship/requests', {
+      mentorId,
+      message,
+    });
+    return response.data;
+  },
+
+  // Get mentorship request status for a mentor
+  getRequestStatus: async (mentorId) => {
+    const response = await apiClient.get(`/mentorship/requests/status/${mentorId}`);
+    return response.data;
+  },
+
+  // Get student's mentorship requests
+  getStudentRequests: async () => {
+    const response = await apiClient.get('/mentorship/requests/student');
+    return response.data;
+  },
+
+  // Create or update mentor profile
+  createOrUpdateProfile: async (profileData) => {
+    const response = await apiClient.post('/mentorship/mentor/profile', profileData);
+    return response.data;
+  },
+
+  // Get mentor profile
+  getMentorProfile: async () => {
+    const response = await apiClient.get('/mentorship/mentor/profile');
+    return response.data;
+  },
+};
+
 export default apiClient;
