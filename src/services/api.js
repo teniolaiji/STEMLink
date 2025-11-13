@@ -51,12 +51,12 @@ export const authAPI = {
   login: async (credentials) => {
     const response = await apiClient.post('/auth/login', credentials);
     const data = response.data;
-    
+
     // Store token from jwt_token field
     if (data.jwt_token) {
       localStorage.setItem('token', data.jwt_token);
     }
-    
+
     // Store user data with proper mapping
     if (data.user) {
       const user = {
@@ -70,7 +70,7 @@ export const authAPI = {
       };
       localStorage.setItem('user', JSON.stringify(user));
     }
-    
+
     return data;
   },
 
@@ -86,10 +86,10 @@ export const authAPI = {
   getAccount: async () => {
     const response = await apiClient.get('/auth/account');
     const data = response.data;
-    
+
     // Handle nested user object
     const userData = data.user || data;
-    
+
     // Map the response to match our expected format
     if (userData._id) {
       return {
@@ -103,7 +103,7 @@ export const authAPI = {
         createdAt: userData.createdAt,
       };
     }
-    
+
     return userData;
   },
 };
@@ -120,7 +120,7 @@ export const mentorAPI = {
   getMyProfile: async () => {
     const response = await apiClient.get('/mentors/profile');
     const data = response.data;
-    
+
     // Return the nested profile object
     return data.profile || data;
   },
@@ -158,7 +158,7 @@ export const studentAPI = {
   getMyProfile: async () => {
     const response = await apiClient.get('/students/profile');
     const data = response.data;
-    
+
     // Return the nested profile object
     return data.profile || data;
   },
@@ -209,31 +209,7 @@ export const mentorshipAPI = {
     });
     return response.data;
   },
-};
 
-// Review System API calls
-export const reviewAPI = {
-  // Add a new review
-  addReview: async (reviewData) => {
-    const response = await apiClient.post('/reviews/addd-new', reviewData);
-    return response.data;
-  },
-
-  // Get reviews for a user
-  getUserReviews: async (userId) => {
-    const response = await apiClient.get(`/reviews/user/${userId}`);
-    return response.data;
-  },
-
-  // Get reviews added by me
-  getMyReviews: async () => {
-    const response = await apiClient.get('/reviews/added-by-me');
-    return response.data;
-  },
-};
-
-// Mentorship API calls
-export const mentorshipAPI = {
   // Get pending mentorship requests (for mentors)
   getPendingRequests: async () => {
     const response = await apiClient.get('/mentorship/requests');
@@ -247,7 +223,7 @@ export const mentorshipAPI = {
   },
 
   // Accept mentorship request
-  acceptRequest: async (requestId) => {
+  acceptRequest2: async (requestId) => {
     const response = await apiClient.post(`/mentorship/requests/${requestId}/accept`);
     return response.data;
   },
@@ -265,19 +241,19 @@ export const mentorshipAPI = {
   },
 
   // Get all mentors with pagination and filters
-  getAllMentors: async (params = {}) => {
+  getAllMentors2: async (params = {}) => {
     const response = await apiClient.get('/mentorship/mentors', { params });
     return response.data;
   },
 
   // Get single mentor by ID
-  getMentorById: async (mentorId) => {
+  getMentorById2: async (mentorId) => {
     const response = await apiClient.get(`/mentorship/mentors/${mentorId}`);
     return response.data;
   },
 
   // Send mentorship request
-  sendRequest: async (mentorId, message) => {
+  sendRequest2: async (mentorId, message) => {
     const response = await apiClient.post('/mentorship/requests', {
       mentorId,
       message,
@@ -306,6 +282,27 @@ export const mentorshipAPI = {
   // Get mentor profile
   getMentorProfile: async () => {
     const response = await apiClient.get('/mentorship/mentor/profile');
+    return response.data;
+  },
+};
+
+// Review System API calls
+export const reviewAPI = {
+  // Add a new review
+  addReview: async (reviewData) => {
+    const response = await apiClient.post('/reviews/addd-new', reviewData);
+    return response.data;
+  },
+
+  // Get reviews for a user
+  getUserReviews: async (userId) => {
+    const response = await apiClient.get(`/reviews/user/${userId}`);
+    return response.data;
+  },
+
+  // Get reviews added by me
+  getMyReviews: async () => {
+    const response = await apiClient.get('/reviews/added-by-me');
     return response.data;
   },
 };
