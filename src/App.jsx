@@ -3,11 +3,9 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 
-// Import components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-// Import pages
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -22,16 +20,13 @@ import FindMentors from './pages/FindMentors';
 import StudentProfile from './pages/StudentProfile';
 import MyMentorships from './pages/MyMentorships';
 import EmailVerification from './pages/EmailVerification';
-// import AdminPanel from './pages/AdminPanel';
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        {/* Navigation */}
         <Navbar />
 
-        {/* Main Content */}
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -47,15 +42,12 @@ function App() {
             <Route path="/find-mentors" element={<FindMentors />} />
             <Route path="/student-profile" element={<StudentProfile />} />
             <Route path="/my-mentorships" element={<MyMentorships />} />
-            {/* <Route path="/admin-panel" element={<AdminPanel />} /> */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
 
-        {/* Footer */}
         <Footer />
 
-        {/* Toast Container */}
         <ToastContainer
           position="top-right"
           autoClose={3000}
