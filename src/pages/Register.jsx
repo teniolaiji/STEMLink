@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { authAPI } from '../services/api';
@@ -15,6 +15,14 @@ function Register() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -46,16 +54,11 @@ function Register() {
 
       const data = await authAPI.register(registrationData);
       
-      toast.success(data.message || 'Registration successful! Please check your email.');
+      toast.success('Account created successfully! Please login.');
       
-      // Redirect to email verification page
+      // Redirect to login page
       setTimeout(() => {
-        navigate('/verify-email', { 
-          state: { 
-            email: formData.email,
-            message: data.message 
-          } 
-        });
+        navigate('/login');
       }, 1500);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Registration failed. Please try again.';
@@ -211,9 +214,9 @@ function Register() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+              <a href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
                 Sign in
-              </Link>
+              </a>
             </p>
           </div>
         </div>

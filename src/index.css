@@ -64,6 +64,11 @@ body {
 .Toastify__toast {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   border-radius: 0.5rem;
+  color: white !important;
+}
+
+.Toastify__toast-body {
+  color: white !important;
 }
 
 .Toastify__toast--success {
@@ -80,4 +85,17 @@ body {
 
 .Toastify__toast--warning {
   background: #f59e0b;
+}
+
+.Toastify__progress-bar {
+  background: rgba(255, 255, 255, 0.7) !important;
+}
+
+.Toastify__close-button {
+  color: white !important;
+  opacity: 0.7;
+}
+
+.Toastify__close-button:hover {
+  opacity: 1;
 }

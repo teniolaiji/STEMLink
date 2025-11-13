@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { authAPI } from '../services/api';
 
@@ -10,6 +10,14 @@ function Login() {
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      navigate('/dashboard');
+    }
+  }, [navigate]);
 
   const handleChange = (e) => {
     setFormData({
@@ -31,9 +39,10 @@ function Login() {
       
       toast.success(data.message || 'Login successful!');
       
-      // Redirect to dashboard
+      // Redirect to dashboard and reload to update nav
       setTimeout(() => {
         navigate('/dashboard');
+        window.location.reload();
       }, 1000);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
@@ -100,9 +109,9 @@ function Login() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+              <a href="/register" className="text-primary-600 hover:text-primary-700 font-medium">
                 Sign up
-              </Link>
+              </a>
             </p>
           </div>
         </div>
