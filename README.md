@@ -18,7 +18,13 @@ npm --version
 
 ## 🔧 Installation & Running the App
 
-### 1. Install Dependencies
+### 1. Navigate to Project Directory
+
+```bash
+cd C:\Users\HP\Documents\ubumamyi\stemlink
+```
+
+### 2. Install Dependencies
 
 ```bash
 npm install
@@ -31,6 +37,16 @@ npm run dev
 ```
 
 The application will be available at: **http://localhost:5173**
+
+## ✨ Features
+
+- 🔐 User Authentication (Login, Register)
+- 👤 Student & Mentor Profiles
+- 🔍 Find Mentors
+- 🤝 Mentorship Requests & Management
+- ⭐ Review & Rating System
+- 📊 Personal Dashboard
+- 🔔 Toast Notifications
 
 ## 🛠️ Other Commands
 
