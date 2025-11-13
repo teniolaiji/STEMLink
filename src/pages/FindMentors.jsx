@@ -10,6 +10,7 @@ function FindMentors() {
   const [showReviews, setShowReviews] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [requestedMentors, setRequestedMentors] = useState(new Set());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,12 +30,24 @@ function FindMentors() {
     }
   };
 
-  const handleRequestMentorship = async (mentorId) => {
+  const handleRequestMentorship = async (mentor) => {
     try {
-      await mentorshipAPI.sendRequest(mentorId);
+      // Send the mentor's user ID, not the profile ID
+      const mentorUserId = mentor.user?._id || mentor.userId?._id;
+      
+      if (!mentorUserId) {
+        toast.error('Unable to identify mentor. Please try again.');
+        return;
+      }
+      
+      await mentorshipAPI.sendRequest(mentorUserId);
+      
+      // Add mentor to requested list
+      setRequestedMentors(prev => new Set([...prev, mentorUserId]));
+      
       toast.success('Mentorship request sent successfully!');
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to send request';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to send request';
       toast.error(errorMessage);
     }
   };
@@ -47,6 +60,11 @@ function FindMentors() {
     } catch (error) {
       toast.error('Failed to load reviews');
     }
+  };
+
+  const isMentorRequested = (mentor) => {
+    const mentorUserId = mentor.user?._id || mentor.userId?._id;
+    return requestedMentors.has(mentorUserId);
   };
 
   if (loading) {
@@ -76,68 +94,77 @@ function FindMentors() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mentors.map((mentor) => (
-              <div key={mentor._id} className="card hover:shadow-lg transition-shadow">
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex items-center">
-                    <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-2xl">
-                      👨‍🏫
-                    </div>
-                    <div className="ml-3">
-                      <h3 className="font-semibold text-gray-900">
-                        {mentor.userId?.firstName} {mentor.userId?.lastName}
-                      </h3>
-                      <p className="text-sm text-gray-600">{mentor.profession}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-gray-700 text-sm mb-4 line-clamp-3">{mentor.bio}</p>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span className="font-medium">Experience:</span>
-                    <span className="ml-2">{mentor.yearsOfExperience} years</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span className="font-medium">Availability:</span>
-                    <span className="ml-2">{mentor.availability}</span>
-                  </div>
-                </div>
-
-                {mentor.stemFields && mentor.stemFields.length > 0 && (
-                  <div className="mb-4">
-                    <div className="flex flex-wrap gap-2">
-                      {mentor.stemFields.slice(0, 3).map((field, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full"
-                        >
-                          {field}
-                        </span>
-                      ))}
+            {mentors.map((mentor) => {
+              const isRequested = isMentorRequested(mentor);
+              
+              return (
+                <div key={mentor._id} className="card hover:shadow-lg transition-shadow">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center">
+                      <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-2xl">
+                        👨‍🏫
+                      </div>
+                      <div className="ml-3">
+                        <h3 className="font-semibold text-gray-900">
+                          {mentor.user?.firstName || mentor.userId?.firstName} {mentor.user?.lastName || mentor.userId?.lastName}
+                        </h3>
+                        <p className="text-sm text-gray-600">{mentor.profession}</p>
+                      </div>
                     </div>
                   </div>
-                )}
 
-                <div className="flex gap-2">
-                  {currentUser?.role === 'STUDENT' && (
-                    <button
-                      onClick={() => handleRequestMentorship(mentor._id)}
-                      className="flex-1 btn-primary text-sm py-2"
-                    >
-                      Request Mentorship
-                    </button>
+                  <p className="text-gray-700 text-sm mb-4 line-clamp-3">{mentor.bio}</p>
+
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium">Experience:</span>
+                      <span className="ml-2">{mentor.yearsOfExperience} years</span>
+                    </div>
+                    <div className="flex items-center text-sm text-gray-600">
+                      <span className="font-medium">Availability:</span>
+                      <span className="ml-2">{mentor.availability}</span>
+                    </div>
+                  </div>
+
+                  {mentor.stemFields && mentor.stemFields.length > 0 && (
+                    <div className="mb-4">
+                      <div className="flex flex-wrap gap-2">
+                        {mentor.stemFields.slice(0, 3).map((field, idx) => (
+                          <span
+                            key={idx}
+                            className="px-2 py-1 bg-primary-100 text-primary-800 text-xs rounded-full"
+                          >
+                            {field}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   )}
-                  <button
-                    onClick={() => handleViewReviews(mentor.userId?._id)}
-                    className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
-                  >
-                    View Reviews
-                  </button>
+
+                  <div className="flex gap-2">
+                    {currentUser?.role === 'STUDENT' && (
+                      <button
+                        onClick={() => handleRequestMentorship(mentor)}
+                        disabled={isRequested}
+                        className={`flex-1 text-sm py-2 font-semibold rounded-lg transition-colors ${
+                          isRequested
+                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            : 'btn-primary'
+                        }`}
+                      >
+                        {isRequested ? '✓ Request Sent' : 'Request Mentorship'}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => handleViewReviews(mentor.user?._id || mentor.userId?._id)}
+                      className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                    >
+                      View Reviews
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

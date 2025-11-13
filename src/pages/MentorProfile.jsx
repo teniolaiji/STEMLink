@@ -28,6 +28,7 @@ function MentorProfile() {
       const data = await mentorAPI.getMyProfile();
       setProfile(data);
       setHasProfile(true);
+      
       if (data) {
         setFormData({
           bio: data.bio || '',
@@ -83,7 +84,7 @@ function MentorProfile() {
       await fetchProfile();
       setIsEditing(false);
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to save profile';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to save profile';
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -109,6 +110,11 @@ function MentorProfile() {
             <h1 className="text-3xl font-bold text-gray-900">Mentor Profile 👨‍🏫</h1>
             {!hasProfile && !isEditing && (
               <p className="text-gray-600 mt-1">Create your profile to start mentoring</p>
+            )}
+            {profile && profile.user && (
+              <p className="text-gray-600 mt-1">
+                {profile.user.firstName} {profile.user.lastName} • {profile.user.email}
+              </p>
             )}
           </div>
           {profile && !isEditing && (

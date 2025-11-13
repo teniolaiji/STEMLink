@@ -7,7 +7,9 @@ function MyMentorships() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedMentorship, setSelectedMentorship] = useState(null);
+  const [selectedPerson, setSelectedPerson] = useState(null);
   const [reviewData, setReviewData] = useState({
     rating: 5,
     comment: '',
@@ -21,11 +23,19 @@ function MyMentorships() {
   }, [filter]);
 
   const fetchMentorships = async () => {
+    setLoading(true);
     try {
       const data = await mentorshipAPI.getMyMentorships(filter, 0, 20);
-      setMentorships(data.mentorships || data);
+      console.log('Mentorships response:', data); // Debug log
+      
+      // Handle different possible response structures
+      const mentorshipsData = data.relationships || data.mentorships || data || [];
+      setMentorships(Array.isArray(mentorshipsData) ? mentorshipsData : []);
     } catch (error) {
-      toast.error('Failed to load mentorships');
+      console.error('Mentorships error:', error); // Debug log
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to load mentorships';
+      toast.error(errorMessage);
+      setMentorships([]); // Set empty array on error
     } finally {
       setLoading(false);
     }
@@ -37,7 +47,7 @@ function MyMentorships() {
       toast.success('Mentorship request accepted!');
       fetchMentorships();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to accept request';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to accept request';
       toast.error(errorMessage);
     }
   };
@@ -50,7 +60,7 @@ function MyMentorships() {
       toast.success('Mentorship ended successfully');
       fetchMentorships();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to end mentorship';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to end mentorship';
       toast.error(errorMessage);
     }
   };
@@ -60,13 +70,18 @@ function MyMentorships() {
     setShowReviewModal(true);
   };
 
+  const handleOpenDetailsModal = (person) => {
+    setSelectedPerson(person);
+    setShowDetailsModal(true);
+  };
+
   const handleSubmitReview = async (e) => {
     e.preventDefault();
 
     try {
       const revieweeId = currentUser.role === 'STUDENT' 
-        ? selectedMentorship.mentorId._id 
-        : selectedMentorship.studentId._id;
+        ? selectedMentorship.mentor._id 
+        : selectedMentorship.student._id;
 
       await reviewAPI.addReview({
         revieweeId,
@@ -78,7 +93,7 @@ function MyMentorships() {
       setShowReviewModal(false);
       setReviewData({ rating: 5, comment: '' });
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to submit review';
+      const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to submit review';
       toast.error(errorMessage);
     }
   };
@@ -145,6 +160,16 @@ function MyMentorships() {
             >
               Completed
             </button>
+            <button
+              onClick={() => setFilter('CANCELLED')}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                filter === 'CANCELLED'
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              Cancelled
+            </button>
           </div>
         </div>
 
@@ -158,93 +183,188 @@ function MyMentorships() {
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6">
-            {mentorships.map((mentorship) => (
-              <div key={mentorship._id} className="card">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-2xl">
-                        {currentUser.role === 'STUDENT' ? '👨‍🏫' : '🎓'}
+            {mentorships.map((mentorship) => {
+              const person = currentUser.role === 'STUDENT' ? mentorship.mentor : mentorship.student;
+              
+              return (
+                <div key={mentorship._id} className="card">
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-2xl">
+                          {currentUser.role === 'STUDENT' ? '👨‍🏫' : '🎓'}
+                        </div>
+                        <div className="ml-3">
+                          <h3 className="font-semibold text-gray-900">
+                            {person?.firstName} {person?.lastName}
+                          </h3>
+                          <p className="text-sm text-gray-600">{person?.email}</p>
+                        </div>
                       </div>
-                      <div className="ml-3">
-                        <h3 className="font-semibold text-gray-900">
-                          {currentUser.role === 'STUDENT'
-                            ? `${mentorship.mentorId?.userId?.firstName} ${mentorship.mentorId?.userId?.lastName}`
-                            : `${mentorship.studentId?.userId?.firstName} ${mentorship.studentId?.userId?.lastName}`}
-                        </h3>
-                        <p className="text-sm text-gray-600">
-                          {currentUser.role === 'STUDENT'
-                            ? mentorship.mentorId?.profession
-                            : mentorship.studentId?.schoolName}
-                        </p>
-                      </div>
-                    </div>
 
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-500">Status:</span>
-                        <span
-                          className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
-                            mentorship.status === 'ACTIVE'
-                              ? 'bg-green-100 text-green-800'
-                              : mentorship.status === 'PENDING'
-                              ? 'bg-yellow-100 text-yellow-800'
-                              : mentorship.status === 'COMPLETED'
-                              ? 'bg-blue-100 text-blue-800'
-                              : 'bg-gray-100 text-gray-800'
-                          }`}
-                        >
-                          {mentorship.status}
-                        </span>
+                      <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                        <div>
+                          <span className="text-gray-500">Status:</span>
+                          <span
+                            className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                              mentorship.status === 'ACTIVE'
+                                ? 'bg-green-100 text-green-800'
+                                : mentorship.status === 'PENDING'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : mentorship.status === 'COMPLETED'
+                                ? 'bg-blue-100 text-blue-800'
+                                : 'bg-gray-100 text-gray-800'
+                            }`}
+                          >
+                            {mentorship.status}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-gray-500">Started:</span>
+                          <span className="ml-2 text-gray-900">
+                            {new Date(mentorship.startDate || mentorship.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
-                      <div>
-                        <span className="text-gray-500">Started:</span>
-                        <span className="ml-2 text-gray-900">
-                          {new Date(mentorship.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
 
-                  <div className="flex gap-2 ml-4">
-                    {mentorship.status === 'PENDING' && currentUser.role === 'MENTOR' && (
                       <button
-                        onClick={() => handleAcceptRequest(mentorship._id)}
-                        className="btn-primary text-sm"
+                        onClick={() => handleOpenDetailsModal(person)}
+                        className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                       >
-                        Accept
+                        📋 View Details
                       </button>
-                    )}
+                    </div>
 
-                    {mentorship.status === 'ACTIVE' && (
-                      <>
+                    <div className="flex flex-wrap gap-2 ml-4">
+                      {mentorship.status === 'PENDING' && currentUser.role === 'MENTOR' && (
                         <button
-                          onClick={() => handleEndMentorship(mentorship._id)}
-                          className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                          onClick={() => handleAcceptRequest(mentorship._id)}
+                          className="btn-primary text-sm"
                         >
-                          End
+                          Accept
                         </button>
+                      )}
+
+                      {mentorship.status === 'ACTIVE' && (
+                        <>
+                          <button
+                            onClick={() => handleEndMentorship(mentorship._id)}
+                            className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                          >
+                            End
+                          </button>
+                          <button
+                            onClick={() => handleOpenReviewModal(mentorship)}
+                            className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
+                          >
+                            Review
+                          </button>
+                        </>
+                      )}
+
+                      {mentorship.status === 'COMPLETED' && (
                         <button
                           onClick={() => handleOpenReviewModal(mentorship)}
                           className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
                         >
-                          Review
+                          Add Review
                         </button>
-                      </>
-                    )}
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
 
-                    {mentorship.status === 'COMPLETED' && (
-                      <button
-                        onClick={() => handleOpenReviewModal(mentorship)}
-                        className="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors text-sm"
-                      >
-                        Add Review
-                      </button>
-                    )}
+        {/* Details Modal */}
+        {showDetailsModal && selectedPerson && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold">
+                    {currentUser.role === 'STUDENT' ? 'Mentor Details' : 'Student Details'}
+                  </h2>
+                  <button
+                    onClick={() => setShowDetailsModal(false)}
+                    className="text-gray-500 hover:text-gray-700 text-2xl"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center mb-4">
+                    <div className="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-4xl">
+                      {currentUser.role === 'STUDENT' ? '👨‍🏫' : '🎓'}
+                    </div>
+                    <div className="ml-4">
+                      <h3 className="text-xl font-semibold text-gray-900">
+                        {selectedPerson.firstName} {selectedPerson.lastName}
+                      </h3>
+                      <p className="text-gray-600">{selectedPerson.role}</p>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <h4 className="font-semibold text-gray-900 mb-3">Contact Information</h4>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-sm text-gray-500">Email:</span>
+                        <p className="text-gray-900">{selectedPerson.email}</p>
+                      </div>
+                      {selectedPerson.phoneNumber && (
+                        <div>
+                          <span className="text-sm text-gray-500">Phone:</span>
+                          <p className="text-gray-900">{selectedPerson.phoneNumber}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4">
+                    <h4 className="font-semibold text-gray-900 mb-3">Account Information</h4>
+                    <div className="space-y-2">
+                      <div>
+                        <span className="text-sm text-gray-500">Preferred Language:</span>
+                        <p className="text-gray-900">{selectedPerson.preferredLanguage}</p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Member Since:</span>
+                        <p className="text-gray-900">
+                          {new Date(selectedPerson.createdAt).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                          })}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-sm text-gray-500">Account Status:</span>
+                        <span className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                          selectedPerson.isActive 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {selectedPerson.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="border-t pt-4 mt-4">
+                    <button
+                      onClick={() => setShowDetailsModal(false)}
+                      className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                    >
+                      Close
+                    </button>
                   </div>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         )}
 

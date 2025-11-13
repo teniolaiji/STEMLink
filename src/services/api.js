@@ -50,7 +50,28 @@ export const authAPI = {
   // User Login
   login: async (credentials) => {
     const response = await apiClient.post('/auth/login', credentials);
-    return response.data;
+    const data = response.data;
+    
+    // Store token from jwt_token field
+    if (data.jwt_token) {
+      localStorage.setItem('token', data.jwt_token);
+    }
+    
+    // Store user data with proper mapping
+    if (data.user) {
+      const user = {
+        id: data.user._id,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        email: data.user.email,
+        phoneNumber: data.user.phoneNumber,
+        role: data.user.role,
+        createdAt: data.user.createdAt,
+      };
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+    
+    return data;
   },
 
   // Email Verification
@@ -64,7 +85,26 @@ export const authAPI = {
   // Get Account Information (Protected)
   getAccount: async () => {
     const response = await apiClient.get('/auth/account');
-    return response.data;
+    const data = response.data;
+    
+    // Handle nested user object
+    const userData = data.user || data;
+    
+    // Map the response to match our expected format
+    if (userData._id) {
+      return {
+        id: userData._id,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        phoneNumber: userData.phoneNumber,
+        role: userData.role,
+        emailVerified: userData.isRegisterComplete,
+        createdAt: userData.createdAt,
+      };
+    }
+    
+    return userData;
   },
 };
 
@@ -79,7 +119,10 @@ export const mentorAPI = {
   // Get own mentor profile
   getMyProfile: async () => {
     const response = await apiClient.get('/mentors/profile');
-    return response.data;
+    const data = response.data;
+    
+    // Return the nested profile object
+    return data.profile || data;
   },
 
   // Update mentor profile
@@ -114,7 +157,10 @@ export const studentAPI = {
   // Get own student profile
   getMyProfile: async () => {
     const response = await apiClient.get('/students/profile');
-    return response.data;
+    const data = response.data;
+    
+    // Return the nested profile object
+    return data.profile || data;
   },
 
   // Update student profile

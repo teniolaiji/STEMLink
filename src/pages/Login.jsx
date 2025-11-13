@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { authAPI } from '../services/api';
 
@@ -33,11 +33,8 @@ function Login() {
     try {
       const data = await authAPI.login(formData);
       
-      // Store token and user data
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-      toast.success(data.message || 'Login successful!');
+      // The token and user are already stored in authAPI.login
+      toast.success('Login successful!');
       
       // Redirect to dashboard and reload to update nav
       setTimeout(() => {
@@ -45,7 +42,7 @@ function Login() {
         window.location.reload();
       }, 1000);
     } catch (error) {
-      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || 'Login failed. Please try again.';
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -109,9 +106,9 @@ function Login() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <a href="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </div>
