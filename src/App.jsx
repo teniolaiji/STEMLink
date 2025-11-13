@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useState, useEffect } from 'react';
 import './App.css';
 
 // Import components
@@ -21,7 +20,6 @@ import MentorProfileDetail from './pages/MentorProfileDetail';
 import NotFound from './pages/NotFound';
 import FindMentors from './pages/FindMentors';
 import StudentProfile from './pages/StudentProfile';
-import MentorProfile from './pages/MentorProfile';
 import MyMentorships from './pages/MyMentorships';
 import EmailVerification from './pages/EmailVerification';
 // import AdminPanel from './pages/AdminPanel';

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { mentorAPI, studentAPI, mentorshipAPI, reviewAPI } from '../services/api';
+import { mentorshipAPI } from '../services/api';
 
 function FindMentors() {
   const [mentors, setMentors] = useState([]);
@@ -21,7 +21,7 @@ function FindMentors() {
 
   const fetchMentors = async () => {
     try {
-      const data = await mentorAPI.getAllMentors(0, 20);
+      const data = await mentorshipAPI.getAllMentors(0, 20);
       setMentors(data.mentors || data);
     } catch (error) {
       toast.error('Failed to load mentors');
@@ -34,17 +34,17 @@ function FindMentors() {
     try {
       // Send the mentor's user ID, not the profile ID
       const mentorUserId = mentor.user?._id || mentor.userId?._id;
-      
+
       if (!mentorUserId) {
         toast.error('Unable to identify mentor. Please try again.');
         return;
       }
-      
+
       await mentorshipAPI.sendRequest(mentorUserId);
-      
+
       // Add mentor to requested list
       setRequestedMentors(prev => new Set([...prev, mentorUserId]));
-      
+
       toast.success('Mentorship request sent successfully!');
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to send request';
@@ -96,7 +96,7 @@ function FindMentors() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mentors.map((mentor) => {
               const isRequested = isMentorRequested(mentor);
-              
+
               return (
                 <div key={mentor._id} className="card hover:shadow-lg transition-shadow">
                   <div className="flex items-start justify-between mb-4">

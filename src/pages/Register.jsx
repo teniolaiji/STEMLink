@@ -53,9 +53,9 @@ function Register() {
       const { confirmPassword, ...registrationData } = formData;
 
       const data = await authAPI.register(registrationData);
-      
+
       toast.success('Account created successfully! Please login.');
-      
+
       // Redirect to login page
       setTimeout(() => {
         navigate('/login');
@@ -214,9 +214,9 @@ function Register() {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <a href="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
                 Sign in
-              </a>
+              </Link>
             </p>
           </div>
         </div>

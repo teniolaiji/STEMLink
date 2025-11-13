@@ -24,7 +24,7 @@ function Dashboard() {
     try {
       const data = await authAPI.getAccount();
       setUser(data);
-      
+
       // Redirect based on role
       if (data.role === 'ADMIN') {
         navigate('/admin-panel');
@@ -32,7 +32,7 @@ function Dashboard() {
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to load user data';
       toast.error(errorMessage);
-      
+
       if (error.response?.status === 401) {
         navigate('/login');
       }
@@ -60,7 +60,7 @@ function Dashboard() {
           <h1 className="text-3xl font-bold text-gray-900">
             Welcome back, {user?.firstName}! 👋
           </h1>
-          <p className="text-gray-600 mt-1">Here's what's happening with your account</p>
+          <p className="text-gray-600 mt-1">Here&apos;s what&apos;s happening with your account</p>
         </div>
 
         {/* Quick Actions - Student */}
@@ -143,8 +143,8 @@ function Dashboard() {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Account Information</h2>
             <span className={`px-4 py-2 rounded-full text-sm font-semibold ${
-              user?.role === 'MENTOR' 
-                ? 'bg-purple-100 text-purple-800' 
+              user?.role === 'MENTOR'
+                ? 'bg-purple-100 text-purple-800'
                 : user?.role === 'ADMIN'
                 ? 'bg-red-100 text-red-800'
                 : 'bg-blue-100 text-blue-800'
@@ -152,7 +152,7 @@ function Dashboard() {
               {user?.role}
             </span>
           </div>
-          
+
           {user && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
@@ -210,13 +210,13 @@ function Dashboard() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {user?.role === 'STUDENT' ? (
               <>
-                <button 
+                <button
                   onClick={() => navigate('/recommended-mentors')}
                   className="btn-primary text-sm py-3"
                 >
                   🔍 Recommended Mentors
                 </button>
-                <button 
+                <button
                   onClick={() => navigate('/mentors')}
                   className="bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm"
                 >
@@ -225,13 +225,13 @@ function Dashboard() {
               </>
             ) : (
               <>
-                <button 
+                <button
                   onClick={() => navigate('/mentor-profile')}
                   className="btn-primary text-sm py-3"
                 >
                   ✏️ Edit Profile
                 </button>
-                <button 
+                <button
                   onClick={() => navigate('/mentorship-requests')}
                   className="bg-secondary-600 hover:bg-secondary-700 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 text-sm"
                 >

@@ -14,7 +14,7 @@ function EmailVerification() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!verificationCode.trim()) {
       toast.error('Please enter the verification code');
       return;
@@ -24,16 +24,16 @@ function EmailVerification() {
 
     try {
       const data = await authAPI.verifyEmail(verificationCode);
-      
+
       toast.success(data.message || 'Email verified successfully!');
-      
+
       // Redirect to login page
       setTimeout(() => {
         navigate('/login');
       }, 1500);
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Verification failed. Please check your code.';
-      
+
       if (error.response?.status === 410) {
         toast.error('Verification code has expired. Please request a new one.');
       } else if (error.response?.status === 404) {
@@ -99,8 +99,8 @@ function EmailVerification() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Didn't receive the code?{' '}
-              <button 
+              Didn&apos;t receive the code?{' '}
+              <button
                 onClick={handleResendCode}
                 className="text-primary-600 hover:text-primary-700 font-medium"
                 type="button"
