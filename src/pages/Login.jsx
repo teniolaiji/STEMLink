@@ -33,7 +33,6 @@ function Login() {
     try {
       const data = await authAPI.login(formData);
       
-      // The token and user are already stored in authAPI.login
       toast.success('Login successful!');
       
       // Redirect to dashboard and reload to update nav
