@@ -1,9 +1,29 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 
 function Home() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    setIsLoggedIn(!!token);
+  }, []);
+
+  if (isLoggedIn) {
+    return (
+      <div className="flex-grow flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-6xl mb-6">🎓</div>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Connecting students with experienced mentors. Build your career, share your knowledge, and grow in the world of STEM.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-[calc(100vh-4rem)]">
-      {/* Hero Section */}
       <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
           <div className="text-6xl mb-6">🎓</div>
@@ -14,14 +34,14 @@ function Home() {
             Empowering girls in Rwanda through STEM mentorship connections
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link 
-              to="/register" 
+            <Link
+              to="/register"
               className="btn-primary text-lg px-8 py-4 inline-block"
             >
               Get Started →
             </Link>
-            <Link 
-              to="/login" 
+            <Link
+              to="/login"
               className="bg-white border-2 border-primary-600 text-primary-600 hover:bg-primary-50 font-semibold px-8 py-4 rounded-lg transition-colors duration-200 inline-block"
             >
               Sign In
@@ -30,7 +50,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
@@ -46,7 +65,7 @@ function Home() {
                 Connect with experienced STEM professionals who are passionate about guiding the next generation
               </p>
             </div>
-            
+
             <div className="card hover:shadow-lg transition-shadow duration-300">
               <div className="text-5xl mb-4 text-center">🤝</div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900 text-center">
@@ -56,7 +75,7 @@ function Home() {
                 Join a growing community of like-minded individuals and expand your STEM connections
               </p>
             </div>
-            
+
             <div className="card hover:shadow-lg transition-shadow duration-300">
               <div className="text-5xl mb-4 text-center">🚀</div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900 text-center">
@@ -70,7 +89,6 @@ function Home() {
         </div>
       </div>
 
-      {/* Stats Section */}
       <div className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary-600 to-primary-700 text-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
@@ -90,7 +108,6 @@ function Home() {
         </div>
       </div>
 
-      {/* CTA Section */}
       <div className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
@@ -99,8 +116,8 @@ function Home() {
           <p className="text-xl text-gray-600 mb-8">
             Join STEMLink today and connect with mentors who can help you succeed
           </p>
-          <Link 
-            to="/register" 
+          <Link
+            to="/register"
             className="btn-primary text-lg px-8 py-4 inline-block"
           >
             Create Your Free Account
