@@ -48,7 +48,6 @@ function EmailVerification() {
 
   const handleResendCode = () => {
     toast.info('Resend code feature coming soon!');
-    // TODO: Implement resend code API when available
   };
 
   return (

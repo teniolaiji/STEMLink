@@ -26,13 +26,13 @@ function MyMentorships() {
     setLoading(true);
     try {
       const data = await mentorshipAPI.getMyMentorships(filter, 0, 20);
-      console.log('Mentorships response:', data); // Debug log
+      console.log('Mentorships response:', data);
       
       // Handle different possible response structures
       const mentorshipsData = data.relationships || data.mentorships || data || [];
       setMentorships(Array.isArray(mentorshipsData) ? mentorshipsData : []);
     } catch (error) {
-      console.error('Mentorships error:', error); // Debug log
+      console.error('Mentorships error:', error);
       const errorMessage = error.response?.data?.error || error.response?.data?.message || 'Failed to load mentorships';
       toast.error(errorMessage);
       setMentorships([]); // Set empty array on error
@@ -118,7 +118,7 @@ function MyMentorships() {
         </div>
 
         {/* Filter */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={() => setFilter('')}
@@ -171,7 +171,7 @@ function MyMentorships() {
               Cancelled
             </button>
           </div>
-        </div>
+        </div> */}
 
         {mentorships.length === 0 ? (
           <div className="card text-center py-12">

@@ -14,6 +14,7 @@ import FindMentors from './pages/FindMentors';
 import StudentProfile from './pages/StudentProfile';
 import MentorProfile from './pages/MentorProfile';
 import MyMentorships from './pages/MyMentorships';
+import Recommendations from './pages/Recommendations';
 // import AdminPanel from './pages/AdminPanel';
 
 function Navigation() {
@@ -49,6 +50,12 @@ function Navigation() {
                 {/* Student Navigation */}
                 {userRole === 'STUDENT' && (
                   <>
+                    <Link 
+                      to="/recommendations" 
+                      className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      🤖 AI Recommendations
+                    </Link>
                     <Link 
                       to="/find-mentors" 
                       className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
@@ -146,6 +153,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/recommendations" element={<Recommendations />} />
           <Route path="/find-mentors" element={<FindMentors />} />
           <Route path="/student-profile" element={<StudentProfile />} />
           <Route path="/mentor-profile" element={<MentorProfile />} />

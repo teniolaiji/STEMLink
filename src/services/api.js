@@ -57,7 +57,6 @@ export const authAPI = {
       localStorage.setItem('token', data.jwt_token);
     }
     
-    // Store user data with proper mapping
     if (data.user) {
       const user = {
         id: data.user._id,
@@ -87,10 +86,8 @@ export const authAPI = {
     const response = await apiClient.get('/auth/account');
     const data = response.data;
     
-    // Handle nested user object
     const userData = data.user || data;
     
-    // Map the response to match our expected format
     if (userData._id) {
       return {
         id: userData._id,
@@ -121,7 +118,6 @@ export const mentorAPI = {
     const response = await apiClient.get('/mentors/profile');
     const data = response.data;
     
-    // Return the nested profile object
     return data.profile || data;
   },
 
@@ -207,6 +203,12 @@ export const mentorshipAPI = {
     const response = await apiClient.get('/mentorships/my-mentorships', {
       params: { status, skip, limit },
     });
+    return response.data;
+  },
+
+  // Get AI-matched mentor recommendations (Student only)
+  getRecommendations: async () => {
+    const response = await apiClient.get('/mentorships/matching-recommendations');
     return response.data;
   },
 };
