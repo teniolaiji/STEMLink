@@ -96,23 +96,8 @@ function Navbar() {
       </>
     )
   ) : (
-    // Public navigation
-    <>
-      <Link
-        to="/"
-        className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        onClick={closeMobileMenu}
-      >
-        Home
-      </Link>
-      <Link
-        to="/mentors"
-        className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-        onClick={closeMobileMenu}
-      >
-        Find Mentors
-      </Link>
-    </>
+    // Public navigation - removed Home and Find Mentors links
+    null
   );
 
   return (

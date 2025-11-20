@@ -20,6 +20,8 @@ import FindMentors from './pages/FindMentors';
 import StudentProfile from './pages/StudentProfile';
 import MyMentorships from './pages/MyMentorships';
 import EmailVerification from './pages/EmailVerification';
+import FAQ from './pages/FAQ';
+import ContactUs from './pages/ContactUs';
 
 function App() {
   return (
@@ -42,6 +44,8 @@ function App() {
             <Route path="/find-mentors" element={<FindMentors />} />
             <Route path="/student-profile" element={<StudentProfile />} />
             <Route path="/my-mentorships" element={<MyMentorships />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact-us" element={<ContactUs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
