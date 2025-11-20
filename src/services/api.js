@@ -205,6 +205,12 @@ export const mentorshipAPI = {
     });
     return response.data;
   },
+
+  // Get AI-matched mentor recommendations (Student only)
+  getRecommendations: async () => {
+    const response = await apiClient.get('/mentorships/matching-recommendations');
+    return response.data;
+  },
 };
 
 // Review System API calls
