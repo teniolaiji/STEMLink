@@ -17,6 +17,11 @@ import MyMentorships from './pages/MyMentorships';
 import Recommendations from './pages/Recommendations';
 // import AdminPanel from './pages/AdminPanel';
 
+// Import footer component
+import Footer from './components/Footer';
+import Faq from './pages/Faq';
+import ContactUs from './pages/ContactUs';
+
 function Navigation() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState('');
@@ -74,6 +79,14 @@ function Navigation() {
                     >
                       👤 My Profile
                     </Link>
+                    {/*
+                    <Link
+                      to="/faq"
+                      className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                    >
+                      ❓ FAQ
+                    </Link>
+                    */}
                   </>
                 )}
 
@@ -159,6 +172,8 @@ function App() {
           <Route path="/mentor-profile" element={<MentorProfile />} />
           <Route path="/my-mentorships" element={<MyMentorships />} />
           {/* <Route path="/admin-panel" element={<AdminPanel />} /> */}
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/faq" element={<Faq />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
 
@@ -175,9 +190,13 @@ function App() {
           pauseOnHover
           theme="light"
         />
+
+        {/* Footer */}
+        <Footer />
       </div>
     </Router>
   );
 }
 
 export default App;
+
