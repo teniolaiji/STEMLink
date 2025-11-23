@@ -234,4 +234,80 @@ export const reviewAPI = {
   },
 };
 
+// Journey Tracker API calls
+export const journeyTrackerAPI = {
+  // Get journey tracker for current student or specific student (mentor view)
+  getJourney: async (studentId = null) => {
+    const url = studentId 
+      ? `/journey-tracker?studentId=${studentId}`
+      : '/journey-tracker';
+    const response = await apiClient.get(url);
+    return response.data;
+  },
+
+  // Create journey tracker
+  createJourney: async (mentorshipRelationId = null) => {
+    const response = await apiClient.post('/journey-tracker', {
+      mentorshipRelationId,
+    });
+    return response.data;
+  },
+
+  // Skills Management
+  updateSkill: async (skillData) => {
+    const response = await apiClient.post('/journey-tracker/skills', skillData);
+    return response.data;
+  },
+
+  removeSkill: async (skillName) => {
+    const response = await apiClient.delete(
+      `/journey-tracker/skills/${encodeURIComponent(skillName)}`
+    );
+    return response.data;
+  },
+
+  // Goals Management
+  addGoal: async (goalData) => {
+    const response = await apiClient.post('/journey-tracker/goals', goalData);
+    return response.data;
+  },
+
+  updateGoal: async (goalId, updates) => {
+    const response = await apiClient.put(
+      `/journey-tracker/goals/${goalId}`,
+      updates
+    );
+    return response.data;
+  },
+
+  removeGoal: async (goalId) => {
+    const response = await apiClient.delete(`/journey-tracker/goals/${goalId}`);
+    return response.data;
+  },
+
+  // Milestones Management
+  addMilestone: async (milestoneData) => {
+    const response = await apiClient.post(
+      '/journey-tracker/milestones',
+      milestoneData
+    );
+    return response.data;
+  },
+
+  // Outcomes Management
+  addOutcome: async (outcome) => {
+    const response = await apiClient.post('/journey-tracker/outcomes', {
+      outcome,
+    });
+    return response.data;
+  },
+
+  updateOutcomes: async (outcomes) => {
+    const response = await apiClient.put('/journey-tracker/outcomes', {
+      outcomes,
+    });
+    return response.data;
+  },
+};
+
 export default apiClient;
