@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { authAPI } from '../services/api';
+import JourneyTracker from '../components/JourneyTracker';
 
 function Dashboard() {
   const [user, setUser] = useState(null);
@@ -211,7 +212,7 @@ function Dashboard() {
           )}
         </div>
 
-        {/* ⭐ STEM Journey Tracker Section — NOW FIXED AND INSIDE RETURN */}
+        ⭐ STEM Journey Tracker Section — NOW FIXED AND INSIDE RETURN
         <div className="mt-8 card bg-white border border-gray-200 p-6">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">🌟 Your STEM Journey Tracker</h2>
 
@@ -261,7 +262,8 @@ function Dashboard() {
             <p className="text-gray-500">Loading your STEM journey data...</p>
           )}
         </div>
-
+        {/* Journey Tracker - Only show for students */}
+        {user?.role === 'STUDENT' && <JourneyTracker />}
       </div>
     </div>
   );
